@@ -8,23 +8,23 @@ The program finds files with the java extension and compresses the trees of the 
 
 ### There are two ways to run it in command line:
 
-1. ./gradlew run --args="pathToProject numberOfCompressions directoryToSave fileName"
++ ./gradlew run --args="pathToProject numberOfCompressions directoryToSave fileName"
 
- where:
+    where:
+    
+    * pathToProject - the path to the project where you want to compress the syntax trees of the source code
+    
+    * numberOfCompressions - number of compressions >= 0
+    
+    * directoryToSave - path to the directory where you want to save the compressed trees
+    
+    * fileName - the filename (relative to the directoryToSave) where you want to save the compressed trees
 
- * pathToProject - the path to the project where you want to compress the syntax trees of the source code
 
- * numberOfCompressions - number of compressions >= 0
-
- * directoryToSave - path to the directory where you want to save the compressed trees
- 
- * fileName - the filename (relative to the directoryToSave) where you want to save the compressed trees
-
-
-2. ./gradlew run --args="pathToCompressedTreesFile"
+* ./gradlew run --args="pathToCompressedTreesFile"
 
   where:
- 
- * pathToCompressedTreesFile - path to the file where the compressed trees are stored
-
-This command prints trees to the screen
+    
+    * pathToCompressedTreesFile - path to the file where the compressed trees are stored
+    
+    This command prints trees to the screen
