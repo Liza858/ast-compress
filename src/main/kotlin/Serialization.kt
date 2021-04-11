@@ -1,3 +1,6 @@
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
@@ -12,17 +15,20 @@ fun getNumbers(reader: BufferedReader): List<Int> {
         .toList()
 }
 
-fun getValues(reader: BufferedReader): List<String> {
+fun getTypes(reader: BufferedReader): List<String> {
     return reader.readLine()
         .split(":")
         .filter { it != "" }
 }
 
+fun getValues(reader: BufferedReader): List<List<String>> {
+    return Json.decodeFromString(reader.readLine())
+}
+
 fun deserializeTree(parents: List<NodeAST>, parentsNumbers: List<Int>, reader: BufferedReader) {
     if (parentsNumbers.all { it == 0 }) return
-    val types = getValues(reader)
+    val types = getTypes(reader)
     val numbers = getNumbers(reader)
-    val valuesNumbers = getNumbers(reader)
     val values = getValues(reader)
 
     val children = mutableListOf<NodeAST>()
@@ -36,12 +42,8 @@ fun deserializeTree(parents: List<NodeAST>, parentsNumbers: List<Int>, reader: B
         idx += parentsNumbers[i]
     }
 
-    idx = 0
     for (i in children.indices) {
-        for (j in 0 until valuesNumbers[i]) {
-            children[i].addValue(values[idx + j])
-        }
-        idx += valuesNumbers[i]
+        children[i].addValues(values[i])
     }
 
     deserializeTree(children, numbers, reader)
@@ -59,13 +61,12 @@ fun serializeTree(nodes: List<NodeAST>, writer: BufferedWriter) {
         writer.write(it.getChildren().size.toString() + ":")
     }
     writer.write("\n")
+    val nodesValues = mutableListOf<List<String>>()
     nodes.forEach {
-        writer.write(it.getValues().size.toString() + ":")
+        nodesValues.addAll(listOf(it.getValues()))
     }
-    writer.write("\n")
-    nodes.forEach {
-        it.getValues().forEach { value -> writer.write("$value:") }
-    }
+    val string = Json.encodeToString(nodesValues)
+    writer.write(string)
     writer.write("\n")
     serializeTree(children, writer)
 }
@@ -86,12 +87,11 @@ fun serializeCompressionsResults(
 }
 
 fun deserializeTree(reader: BufferedReader): NodeAST {
-    val rootType = getValues(reader)[0]
+    val rootType = getTypes(reader)[0]
     val numbers = getNumbers(reader)
-    getNumbers(reader)
     val values = getValues(reader)
     val tree = NodeAST(null, rootType)
-    tree.addValues(values)
+    tree.addValues(values[0])
     deserializeTree(listOf(tree), numbers, reader)
     return tree
 }

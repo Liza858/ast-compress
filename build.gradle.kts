@@ -19,12 +19,13 @@ application {
 
 dependencies {
     implementation("org.eclipse.jdt", "org.eclipse.jdt.core", "3.10.0")
-    testImplementation(kotlin("test-junit"))
+    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation(kotlin("test-junit5"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC")
 }
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile>() {

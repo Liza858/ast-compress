@@ -21,7 +21,7 @@ fun runCompress(
     numOfCompressions: Int,
     dir: File,
     fileName: String
-) {
+): List<CompressionResult> {
     val javaFiles = pathToProject.walkTopDown().filter { it.extension == "java" }.toList()
     val trees = parseProjectFiles(javaFiles).map { buildAST(it) }.toList()
     val compressedTrees = compressTrees(trees, numOfCompressions)
@@ -33,7 +33,15 @@ fun runCompress(
 
     results.forEach { it.print() }
     serializeCompressionsResults(results, dir, fileName)
-    deserializeCompressionsResults(File(dir, fileName)).forEach { it.print() }
+    return results
+}
+
+fun runPrintDeserializedTrees(file: File) {
+    try {
+        deserializeCompressionsResults(file).forEach { it.print() }
+    } catch (e: DeserializationException) {
+        println("Error! File ${file.absolutePath} contains corrupted data or is not a file with trees.")
+    }
 }
 
 fun main(args: Array<String>) {
@@ -43,7 +51,12 @@ fun main(args: Array<String>) {
     }
 
     if (args.size == 1) {
-        // run()
+        val file = File(args[0])
+        if (!file.isFile) {
+            println("This path ${args[0]} doesn't exist or is not a file")
+            return
+        }
+        runPrintDeserializedTrees(file)
         return
     }
 

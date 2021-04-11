@@ -68,20 +68,23 @@ fun buildAST(parent: NodeAST, node: ASTNode) {
     for (property in node.structuralPropertiesForType()) {
         val descriptor = property as StructuralPropertyDescriptor
         val newNode = NodeAST(parent, property.id)
+        val child = node.getStructuralProperty(descriptor)
+        if (child == null) {
+            parent.addChild(newNode)
+            continue
+        }
         when (descriptor) {
             is ChildPropertyDescriptor -> {
-                val child = node.getStructuralProperty(descriptor)
-                if (child != null) buildAST(newNode, child as ASTNode)
+                buildAST(newNode, child as ASTNode)
             }
             is ChildListPropertyDescriptor -> {
-                val nodeList = node.getStructuralProperty(descriptor) as List<*>
+                val nodeList = child as List<*>
                 for (astNode in nodeList) {
                     if (astNode is ASTNode) buildAST(newNode, astNode)
                 }
             }
             is SimplePropertyDescriptor -> {
-                val child = node.getStructuralProperty(descriptor)
-                if (child != null) newNode.addValue(child.toString())
+                newNode.addValue(child.toString())
             }
         }
         parent.addChild(newNode)

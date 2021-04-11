@@ -10,6 +10,7 @@ fun compressTrees(trees: List<NodeAST>, numOfCompressions: Int): List<NodeAST> {
 }
 
 fun compress(parent: NodeAST, edgeToCompress: Edge, statistics: Statistics): NodeAST {
+    if (parent.getChildren().isEmpty()) return parent
     val edgesToCompress = mutableListOf<Edge>()
     for (child in parent.getChildren()) {
         val edge = Edge(parent, child)
