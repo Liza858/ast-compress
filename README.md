@@ -6,7 +6,7 @@ The program finds files with the java extension and compresses the trees of the 
 
 # How to execute
 
-### There are two ways to run:
+### There are two ways to run it in command line:
 
 1. ./gradlew run --args="pathToProject numberOfCompressions directoryToSave fileName"
 
